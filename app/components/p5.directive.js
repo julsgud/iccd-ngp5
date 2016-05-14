@@ -1,4 +1,4 @@
-function p5(p5Wrapper) {
+function p5($window, $state, p5Wrapper) {
     'ngInject';
 
     return {
@@ -13,7 +13,7 @@ function p5(p5Wrapper) {
                 wrapper.init(sketch, element[0]);
             });
 
-            scope.$on('$destroy', function(sketch) {
+            scope.$on('$destroy', function() {
                 wrapper.destroy();
             });
         }
