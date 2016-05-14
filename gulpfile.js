@@ -13,8 +13,8 @@ var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
 
 // files
-var js = 'app/js/**/*.js';
-var views = 'app/js/**/*.html';
+var js = 'app/**/*.js';
+var views = 'app/**/*.html';
 
 // error handling
 var interceptErrors = function(error) {
