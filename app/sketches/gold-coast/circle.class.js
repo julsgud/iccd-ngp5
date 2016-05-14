@@ -1,8 +1,13 @@
 export default class Circle {
-    constructor(_x, _y, _size, _color) {
-        this.x = _x;
-        this.y = _y;
-        this.size = _size;
-        this.color = _color;
+    constructor() {
+        this.x;
+        this.y;
+        this.size;
+        this.color;
+    }
+
+    draw(p, x, y, size, color) {
+        p.fill(color.r, color.g, color.b, color.a);
+        p.ellipse(x, y, size, size);
     }
 }

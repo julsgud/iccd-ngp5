@@ -61,7 +61,7 @@ _angular2.default.module('app').run(_app6.default);
 
 _angular2.default.bootstrap(document, ['app'], { strictDi: true });
 
-},{"./components":2,"./config/app.config":4,"./config/app.constants":5,"./config/app.run":6,"./config/app.templates":7,"./home":10,"./layout":11,"./services":12,"./sketches":15,"angular":18,"angular-ui-router":16}],2:[function(require,module,exports){
+},{"./components":2,"./config/app.config":4,"./config/app.constants":5,"./config/app.run":6,"./config/app.templates":7,"./home":10,"./layout":11,"./services":12,"./sketches":16,"angular":19,"angular-ui-router":17}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -84,7 +84,7 @@ componentsModule.directive('p5', _p2.default);
 
 exports.default = componentsModule;
 
-},{"./p5.directive":3,"angular":18}],3:[function(require,module,exports){
+},{"./p5.directive":3,"angular":19}],3:[function(require,module,exports){
 'use strict';
 
 p5.$inject = ["$window", "$state", "p5Wrapper"];
@@ -262,7 +262,7 @@ homeModule.controller('HomeCtrl', _home4.default);
 
 exports.default = homeModule;
 
-},{"./home.config":8,"./home.controller":9,"angular":18}],11:[function(require,module,exports){
+},{"./home.config":8,"./home.controller":9,"angular":19}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -279,7 +279,7 @@ var layoutModule = _angular2.default.module('app.layout', []);
 
 exports.default = layoutModule;
 
-},{"angular":18}],12:[function(require,module,exports){
+},{"angular":19}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -302,7 +302,7 @@ servicesModule.factory('p5Wrapper', _p5Wrapper2.default);
 
 exports.default = servicesModule;
 
-},{"./p5Wrapper.service":13,"angular":18}],13:[function(require,module,exports){
+},{"./p5Wrapper.service":13,"angular":19}],13:[function(require,module,exports){
 'use strict';
 
 p5Wrapper.$inject = ["$injector"];
@@ -349,44 +349,113 @@ function p5Wrapper($injector) {
 
 exports.default = p5Wrapper;
 
-},{"p5":19}],14:[function(require,module,exports){
+},{"p5":20}],14:[function(require,module,exports){
 'use strict';
 
-GoldCoast.$inject = ["$window"];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _circle = require('./gold-coast/circle.class');
 
-function GoldCoast($window) {
+var _circle2 = _interopRequireDefault(_circle);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function GoldCoast() {
     'ngInject';
 
     return function (p) {
-        var reset = function reset() {};
+        // setup
+        var fps = 64;
+        var gold = { r: 163, g: 107, b: 82, a: 255 };
+        var _gold = gold;
+        var blue = { r: 58, g: 68, b: 157, a: 175 };
+        var x = p.windowWidth / 2;
+        var y = p.windowHeight / 2;
+        var sizeMin = void 0;
+        var shapes = [];
+        var texts = [];
 
-        var gold = { r: 163, g: 107, b: 82 };
-        var blue = { r: 58, g: 68, b: 157 };
+        var reset = function reset() {
+            while (shapes.length > 0) {
+                shapes.pop();
+            }
+
+            while (shapes.length < 8) {
+                shapes.push(new _circle2.default());
+            }
+        };
 
         p.setup = function () {
             p.createCanvas(p.windowWidth, p.windowHeight);
+            p.frameRate(28);
+            sizeMin = p.windowWidth / 8;
+            reset();
         };
 
         p.draw = function () {
+            // reset
+            _gold.a = 255;
+
+            // background
             p.background(blue.r, blue.g, blue.b);
             p.noStroke();
-            p.fill(gold.r, gold.g, gold.b);
-            p.ellipse(p.width / 2, p.height / 2, 30, 30);
+
+            // draw shapes
+            for (var i = shapes.length; i > 0; i--) {
+                shapes[i].draw(p, x, y, size, _gold);
+            };
+
+            // shading rectangle
+            p.fill(blue.r, blue.g, blue.b, blue.a);
+            p.rect(0, p.height / 2, p.width, p.height / 2);
         };
 
         p.windowResized = function () {
             p.resizeCanvas(p.windowWidth, p.windowHeight);
+            reset();
         };
     };
 }
 
 exports.default = GoldCoast;
 
-},{}],15:[function(require,module,exports){
+},{"./gold-coast/circle.class":15}],15:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Circle = function () {
+    function Circle() {
+        _classCallCheck(this, Circle);
+
+        this.x;
+        this.y;
+        this.size;
+        this.color;
+    }
+
+    _createClass(Circle, [{
+        key: "draw",
+        value: function draw(p, x, y, size, color) {
+            p.fill(color.r, color.g, color.b, color.a);
+            p.ellipse(x, y, size, size);
+        }
+    }]);
+
+    return Circle;
+}();
+
+exports.default = Circle;
+
+},{}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -409,7 +478,7 @@ sketchesModule.factory('GoldCoast', _goldCoast2.default);
 
 exports.default = sketchesModule;
 
-},{"./gold-coast.service":14,"angular":18}],16:[function(require,module,exports){
+},{"./gold-coast.service":14,"angular":19}],17:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.2.18
@@ -4949,7 +5018,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.5
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -35818,11 +35887,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":17}],19:[function(require,module,exports){
+},{"./angular":18}],20:[function(require,module,exports){
 (function (global){
 /*! p5.js v0.5.0 May 02, 2016 */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.p5 = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
