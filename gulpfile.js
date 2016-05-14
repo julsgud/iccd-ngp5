@@ -15,6 +15,7 @@ var merge = require('merge-stream');
 // files
 var js = 'app/**/*.js';
 var views = 'app/**/*.html';
+var css = 'app/styles/main.css';
 
 // error handling
 var interceptErrors = function(error) {
@@ -56,8 +57,14 @@ gulp.task('html', function() {
         .pipe(gulp.dest('./build/'));
 });
 
+gulp.task('css', function() {
+    return gulp.src('app/styles/main.css')
+        .on('error', interceptErrors)
+        .pipe(gulp.dest('./build'));
+})
+
 // ready for dist?! run build
-gulp.task('build', ['html', 'browserify'], function() {
+gulp.task('build', ['css', 'html', 'browserify'], function() {
     var html = gulp.src('build/index.html')
                 .pipe(gulp.dest('./dist/'));
     var js = gulp.src('build/app.js')
@@ -68,7 +75,7 @@ gulp.task('build', ['html', 'browserify'], function() {
 });
 
 // run gulp
-gulp.task('default', ['html', 'browserify'], function() {
+gulp.task('default', ['css', 'html', 'browserify'], function() {
     browserSync.init(['./build/**/**.**'], {
         server: './build',
         port: 4000,
@@ -81,4 +88,5 @@ gulp.task('default', ['html', 'browserify'], function() {
     gulp.watch('app/index.html', ['html']);
     gulp.watch(views, ['views']);
     gulp.watch(js, ['browserify']);
+    gulp.watch(css, ['css', 'browserify'])
 });

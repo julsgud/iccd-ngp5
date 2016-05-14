@@ -87,11 +87,11 @@ exports.default = componentsModule;
 },{"./p5.directive":3,"angular":18}],3:[function(require,module,exports){
 'use strict';
 
-p5.$inject = ["p5Wrapper"];
+p5.$inject = ["$window", "$state", "p5Wrapper"];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-function p5(p5Wrapper) {
+function p5($window, $state, p5Wrapper) {
     'ngInject';
 
     return {
@@ -106,7 +106,7 @@ function p5(p5Wrapper) {
                 wrapper.init(sketch, element[0]);
             });
 
-            scope.$on('$destroy', function (sketch) {
+            scope.$on('$destroy', function () {
                 wrapper.destroy();
             });
         }
@@ -159,13 +159,6 @@ Object.defineProperty(exports, "__esModule", {
 function AppRun(AppConstants, $rootScope) {
     'ngInject';
 
-    // load p5 first thing yall
-    // function loader(p5Library) {
-    //     console.log('p5 loaded');
-    // }
-
-    // loader(p5Library);
-
     // update page title on succesful state change
 
     $rootScope.$on('$stateChangeSuccess', function (event, toState) {
@@ -193,8 +186,8 @@ exports.default = AppRun;
 "use strict";
 
 angular.module("templates", []).run(["$templateCache", function ($templateCache) {
-  $templateCache.put("index.html", "<!doctype html>\n<html class=\'no-js\' lang=\"\">\n    <head>\n        <meta charset=\"utf-8\">\n        <meta http-equiv=\"x-ua-compatible\" content=\"ie-edge\">\n        <title ng-bind=\"pageTitle\"></title>\n        <meta name=\"description\" content=\"\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    </head>\n    <body>\n        <!-- app -->\n        <div ui-view></div>\n\n        <!-- analytics -->\n        <script>\n            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=\n            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;\n            e=o.createElement(i);r=o.getElementsByTagName(i)[0];\n            e.src=\'https://www.google-analytics.com/analytics.js\';\n            r.parentNode.insertBefore(e,r)}(window,document,\'script\',\'ga\'));\n            ga(\'create\',\'UA-XXXXX-X\',\'auto\');ga(\'send\',\'pageview\');\n        </script>\n        <!-- app scripts -->\n        <script src=\"app.js\"></script>\n    </body>\n</html>");
-  $templateCache.put("home/home.html", "<div class=\"home-page\">\n\n    <p> I\'m working <3 </p>\n    <p5 sketch=\'$ctrl.current\'> </p5>\n\n</div>");
+  $templateCache.put("index.html", "<!doctype html>\n<html class=\'no-js\' lang=\"\">\n    <head>\n        <meta charset=\"utf-8\">\n        <meta http-equiv=\"x-ua-compatible\" content=\"ie-edge\">\n        <title ng-bind=\"pageTitle\"></title>\n        <meta name=\"description\" content=\"\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no\">\n        <link rel=\"stylesheet\" href=\"main.css\">\n    </head>\n    <body class=\"gold-coast\">\n        <!-- app -->\n        <div ui-view></div>\n\n        <!-- analytics -->\n        <script>\n            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=\n            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;\n            e=o.createElement(i);r=o.getElementsByTagName(i)[0];\n            e.src=\'https://www.google-analytics.com/analytics.js\';\n            r.parentNode.insertBefore(e,r)}(window,document,\'script\',\'ga\'));\n            ga(\'create\',\'UA-XXXXX-X\',\'auto\');ga(\'send\',\'pageview\');\n        </script>\n        <!-- app scripts -->\n        <script src=\"app.js\"></script>\n    </body>\n</html>");
+  $templateCache.put("home/home.html", "<div class=\"home-page gold-coast\">\n\n    <p5 sketch=\'$ctrl.current\' id=\"p5canvas\"> </p5>\n\n</div>");
   $templateCache.put("layout/app-view.html", "<div ui-view></div>");
 }]);
 
@@ -305,9 +298,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var servicesModule = _angular2.default.module('app.services', []);
 
-// import p5 from './p5Library.service';
-// servicesModule.factory('p5', p5);
-
 servicesModule.factory('p5Wrapper', _p5Wrapper2.default);
 
 exports.default = servicesModule;
@@ -360,13 +350,20 @@ function p5Wrapper($injector) {
 exports.default = p5Wrapper;
 
 },{"p5":19}],14:[function(require,module,exports){
-"use strict";
+'use strict';
 
+GoldCoast.$inject = ["$window"];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-function GoldCoast() {
+
+
+function GoldCoast($window) {
+    'ngInject';
+
     return function (p) {
+        var reset = function reset() {};
+
         var gold = { r: 163, g: 107, b: 82 };
         var blue = { r: 58, g: 68, b: 157 };
 
@@ -379,6 +376,10 @@ function GoldCoast() {
             p.noStroke();
             p.fill(gold.r, gold.g, gold.b);
             p.ellipse(p.width / 2, p.height / 2, 30, 30);
+        };
+
+        p.windowResized = function () {
+            p.resizeCanvas(p.windowWidth, p.windowHeight);
         };
     };
 }
