@@ -1,13 +1,21 @@
+import p from 'p5';
+
 export default class Circle {
-    constructor() {
-        this.x;
-        this.y;
-        this.size;
-        this.color;
+    constructor(p) {
+        this.size = 0;
+        this.alpha = 255;
     }
 
-    draw(p, x, y, size, color) {
-        p.fill(color.r, color.g, color.b, color.a);
-        p.ellipse(x, y, size, size);
+    draw(p, color) {
+        p.fill(color.r, color.g, color.b, this.alpha);
+        p.ellipse(p.width/2, p.height/2, this.size, this.size);
     }
+
+    growAndFade(p, fps, seconds, maxSize) {
+        this.size += (seconds*fps)/maxSize;
+        // 64, frameCount, 4s 4000/64
+        this.alpha -= (seconds*fps)/255;
+    }
+
+
 }

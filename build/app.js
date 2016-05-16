@@ -368,43 +368,49 @@ function GoldCoast() {
     return function (p) {
         // setup
         var fps = 64;
+
+        // colors and refs
         var gold = { r: 163, g: 107, b: 82, a: 255 };
-        var _gold = gold;
         var blue = { r: 58, g: 68, b: 157, a: 175 };
-        var x = p.windowWidth / 2;
-        var y = p.windowHeight / 2;
-        var sizeMin = void 0;
+
+        // dims
+        var maxSize = void 0;
+
+        // collections
         var shapes = [];
         var texts = [];
 
-        var reset = function reset() {
-            while (shapes.length > 0) {
-                shapes.pop();
-            }
-
-            while (shapes.length < 8) {
-                shapes.push(new _circle2.default());
-            }
-        };
-
+        ////////
         p.setup = function () {
             p.createCanvas(p.windowWidth, p.windowHeight);
-            p.frameRate(28);
-            sizeMin = p.windowWidth / 8;
-            reset();
+            p.frameRate(fps);
+            maxSize = p.height / 2;
         };
 
+        ////////
         p.draw = function () {
-            // reset
-            _gold.a = 255;
-
-            // background
+            // background and setup
             p.background(blue.r, blue.g, blue.b);
             p.noStroke();
 
+            // if less than 8, add 1
+            if (shapes.length < 8) {
+                if (shapes.length === 0) {
+                    shapes.push(new _circle2.default());
+                } else if (shapes[shapes.length - 1].size > maxSize / 8) {
+                    shapes.push(new _circle2.default());
+                }
+            }
+
+            // che
+            // if (shapes[0].size >= maxSize) {
+            //     shapes[0].pop();
+            // }
+
             // draw shapes
-            for (var i = shapes.length; i > 0; i--) {
-                shapes[i].draw(p, x, y, size, _gold);
+            for (var i = shapes.length - 1; i > 0; i--) {
+                shapes[i].draw(p, gold);
+                shapes[i].growAndFade(p, fps, 4, maxSize);
             };
 
             // shading rectangle
@@ -412,17 +418,30 @@ function GoldCoast() {
             p.rect(0, p.height / 2, p.width, p.height / 2);
         };
 
+        ////////
         p.windowResized = function () {
             p.resizeCanvas(p.windowWidth, p.windowHeight);
             reset();
         };
+
+        ////////
+
+        function reset() {
+            while (shapes.length > 0) {
+                shapes.pop();
+            }
+
+            while (shapes.length < 8) {
+                shapes.push(new _circle2.default());
+            }
+        }
     };
 }
 
 exports.default = GoldCoast;
 
 },{"./gold-coast/circle.class":15}],15:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -430,23 +449,34 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _p = require('p5');
+
+var _p2 = _interopRequireDefault(_p);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Circle = function () {
-    function Circle() {
+    function Circle(p) {
         _classCallCheck(this, Circle);
 
-        this.x;
-        this.y;
-        this.size;
-        this.color;
+        this.size = 0;
+        this.alpha = 255;
     }
 
     _createClass(Circle, [{
-        key: "draw",
-        value: function draw(p, x, y, size, color) {
-            p.fill(color.r, color.g, color.b, color.a);
-            p.ellipse(x, y, size, size);
+        key: 'draw',
+        value: function draw(p, color) {
+            p.fill(color.r, color.g, color.b, this.alpha);
+            p.ellipse(p.width / 2, p.height / 2, this.size, this.size);
+        }
+    }, {
+        key: 'growAndFade',
+        value: function growAndFade(p, fps, seconds, maxSize) {
+            this.size += seconds * fps / maxSize;
+            // 64, frameCount, 4s 4000/64
+            this.alpha -= seconds * fps / 255;
         }
     }]);
 
@@ -455,7 +485,7 @@ var Circle = function () {
 
 exports.default = Circle;
 
-},{}],16:[function(require,module,exports){
+},{"p5":20}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
