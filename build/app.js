@@ -367,11 +367,12 @@ function GoldCoast() {
 
     return function (p) {
         // setup
-        var fps = 64;
+        var fps = 128;
+        var orientation = void 0;
 
         // colors and refs
         var gold = { r: 163, g: 107, b: 82, a: 255 };
-        var blue = { r: 58, g: 68, b: 157, a: 175 };
+        var blue = { r: 58, g: 68, b: 157, a: 200 };
 
         // dims
         var maxSize = void 0;
@@ -384,7 +385,10 @@ function GoldCoast() {
         p.setup = function () {
             p.createCanvas(p.windowWidth, p.windowHeight);
             p.frameRate(fps);
-            maxSize = p.height / 2;
+            p.smooth();
+            orientation = screenOrientation(p.width, p.height);
+            maxSize = orientation === 'landscape' ? p.width / 2 : p.height / 2;
+            console.log(p.width / 2, p.height / 2, maxSize);
         };
 
         ////////
@@ -393,35 +397,28 @@ function GoldCoast() {
             p.background(blue.r, blue.g, blue.b);
             p.noStroke();
 
-            // if less than 8, add 1
-            if (shapes.length < 8) {
-                if (shapes.length === 0) {
-                    shapes.push(new _circle2.default());
-                } else if (shapes[shapes.length - 1].size > maxSize / 8) {
-                    shapes.push(new _circle2.default());
-                }
-            }
-
-            // che
-            // if (shapes[0].size >= maxSize) {
-            //     shapes[0].pop();
-            // }
+            fillArray();
+            console.log(shapes[0].size);
 
             // draw shapes
-            for (var i = shapes.length - 1; i > 0; i--) {
+            for (var i = 0; i < shapes.length; i++) {
                 shapes[i].draw(p, gold);
-                shapes[i].growAndFade(p, fps, 4, maxSize);
-            };
+                shapes[i].growAndFade(p, fps, 3, maxSize);
+            }
 
             // shading rectangle
             p.fill(blue.r, blue.g, blue.b, blue.a);
             p.rect(0, p.height / 2, p.width, p.height / 2);
+
+            trimArray();
         };
 
         ////////
         p.windowResized = function () {
             p.resizeCanvas(p.windowWidth, p.windowHeight);
-            reset();
+            orientation = screenOrientation(p.width, p.height);
+            maxSize = orientation === 'landscape' ? p.width / 2 : p.height / 2;
+            console.log(p.width / 2, p.height / 2, maxSize);
         };
 
         ////////
@@ -435,6 +432,46 @@ function GoldCoast() {
                 shapes.push(new _circle2.default());
             }
         }
+
+        function fillArray() {
+            if (shapes.length === 0) {
+                shapes.push(new _circle2.default());
+            } else if (shapes.length < 8 && shapes[shapes.length - 1].size >= maxSize / 8) {
+                shapes.push(new _circle2.default());
+            }
+        }
+
+        function trimArray() {
+            if (shapes[0].size >= maxSize) {
+                shapes.shift();
+            }
+        }
+
+        function screenOrientation(width, height) {
+            var orientation = void 0;
+
+            if (width > height) {
+                orientation = 'landscape';
+            } else {
+                orientation = 'portrait';
+            }
+
+            console.log(orientation);
+
+            return orientation;
+        }
+
+        p.mouseReleased = function () {
+            while (shapes.length > 0) {
+                shapes.pop();
+            }
+        };
+
+        p.touchEnded = function () {
+            while (shapes.length > 0) {
+                shapes.pop();
+            }
+        };
     };
 }
 
@@ -474,9 +511,10 @@ var Circle = function () {
     }, {
         key: 'growAndFade',
         value: function growAndFade(p, fps, seconds, maxSize) {
+            var framesToMax = seconds * fps / maxSize;
             this.size += seconds * fps / maxSize;
             // 64, frameCount, 4s 4000/64
-            this.alpha -= seconds * fps / 255;
+            this.alpha -= .3;
         }
     }]);
 

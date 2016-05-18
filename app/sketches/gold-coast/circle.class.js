@@ -12,9 +12,10 @@ export default class Circle {
     }
 
     growAndFade(p, fps, seconds, maxSize) {
+        let framesToMax = (seconds*fps)/maxSize;
         this.size += (seconds*fps)/maxSize;
         // 64, frameCount, 4s 4000/64
-        this.alpha -= (seconds*fps)/255;
+        this.alpha -= .3;
     }
 
 

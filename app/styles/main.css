@@ -9,5 +9,5 @@ body {
 }
 
 #p5canvas {
-
+    z-index: -1;
 }
