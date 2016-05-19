@@ -1,0 +1,28 @@
+/**
+ * @license
+ * MyFonts Webfont Build ID 3221118, 2016-05-18T19:02:48-0400
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: TabacGlamG1SemiBold by Suitcase Type Foundry
+ * URL: http://www.myfonts.com/fonts/suitcase/tabac-glam/g1-semi-bold/
+ * Copyright: Copyright (c) 2015 by Tomas Brousil. All rights reserved.
+ * Licensed pageviews: 10,000
+ * 
+ * 
+ * License: http://www.myfonts.com/viewlicense?type=web&buildid=3221118
+ * 
+ * © 2016 MyFonts Inc
+*/
+
+
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/31267e");
+
+  
+@font-face {font-family: 'TabacGlamG1SemiBold';src:url('webfonts/31267E_0_unhinted_0.woff2') format('woff2'),url('webfonts/31267E_0_unhinted_0.woff') format('woff'),url('webfonts/31267E_0_unhinted_0.ttf') format('truetype');}
+ 

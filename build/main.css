@@ -2,12 +2,34 @@ html, body {
     overflow: hidden;
 }
 
+.position-absolute {
+	position: absolute;
+}
+
 body {
     padding: 0;
     margin: 0;
-    position: relative;
+    font-family: TabacGlamG1SemiBold;
 }
 
-#p5canvas {
+header {
+	position: absolute;
+	opacity: 1;
+}
+
+a {
+	text-decoration: none;
+}
+
+.p5canvas {
+		position: absolute;
     z-index: -1;
 }
+
+.title {
+	position: relative;
+	margin: auto;
+	text-align: center;
+	width: 50%;
+}
+

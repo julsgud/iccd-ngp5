@@ -7,6 +7,8 @@ function GoldCoast() {
         // setup
         let fps = 128;
         let orientation;
+        let title1 = 'gold';
+        let title2 = 'coast';
 
         // colors and refs
         let gold = {r: 163, g: 107, b: 82, a:255};
@@ -21,7 +23,8 @@ function GoldCoast() {
 
         ////////
         p.setup = function() {
-            p.createCanvas(p.windowWidth, p.windowHeight);
+            let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+            canvas.class('p5canvas');
             p.frameRate(fps);
             p.smooth();
             orientation = screenOrientation(p.width, p.height);
