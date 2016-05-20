@@ -1,5 +1,3 @@
-import p from 'p5';
-
 export default class Circle {
     constructor(p) {
         this.size = 0;
@@ -12,10 +10,17 @@ export default class Circle {
     }
 
     growAndFade(p, fps, seconds, maxSize) {
-        let framesToMax = (seconds*fps)/maxSize;
-        this.size += (seconds*fps)/maxSize;
+
+        // size should go from 0 to maxSize in totalFrames
+        // how much should it increment per frame?
+        // 460 - 0 - 360
+        let framesToMax = seconds * fps;
+        let incrementBy = maxSize/framesToMax;
+        this.size += incrementBy;
         // 64, frameCount, 4s 4000/64
-        this.alpha -= .3;
+
+        let decrementBy = 255/framesToMax;
+        this.alpha -= decrementBy;
     }
 
 
