@@ -1,16 +1,16 @@
 'use strict';
 
-var gulp = require('gulp');
-var notify = require('gulp-notify');
-var source = require('vinyl-source-stream');
-var browserify = require('browserify');
-var babelify = require('babelify');
-var ngAnnotate = require('browserify-ngannotate');
-var browserSync = require('browser-sync').create();
-var rename = require('gulp-rename');
+var gulp          = require('gulp');
+var notify        = require('gulp-notify');
+var source        = require('vinyl-source-stream');
+var browserify    = require('browserify');
+var babelify      = require('babelify');
+var ngAnnotate    = require('browserify-ngannotate');
+var browserSync   = require('browser-sync').create();
+var rename        = require('gulp-rename');
 var templateCache = require('gulp-angular-templatecache');
-var uglify = require('gulp-uglify');
-var merge = require('merge-stream');
+var uglify        = require('gulp-uglify');
+var merge         = require('merge-stream');
 
 // files
 var js = 'app/**/*.js';
@@ -61,7 +61,7 @@ gulp.task('css', function() {
     return gulp.src('app/styles/main.css')
         .on('error', interceptErrors)
         .pipe(gulp.dest('./build'));
-})
+});
 
 // ready for dist?! run build
 gulp.task('build', ['css', 'html', 'browserify'], function() {
@@ -70,8 +70,10 @@ gulp.task('build', ['css', 'html', 'browserify'], function() {
     var js = gulp.src('build/app.js')
                 .pipe(uglify())
                 .pipe(gulp.dest('./dist/'));
+    var css = gulp.src('build/app.js')
+                .pipe(gulp.dest('./dist/'));
 
-    return merge(html, js);
+    return merge(css, html, js);
 });
 
 // run gulp
