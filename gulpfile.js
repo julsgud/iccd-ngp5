@@ -70,10 +70,12 @@ gulp.task('build', ['css', 'html', 'browserify'], function() {
     var js = gulp.src('build/app.js')
                 .pipe(uglify())
                 .pipe(gulp.dest('./dist/'));
-    var css = gulp.src('build/app.js')
+    var css = gulp.src('build/main.css')
                 .pipe(gulp.dest('./dist/'));
+    var fonts = gulp.src('build/fonts/31267E_0_0.ttf')
+                .pipe(gulp.dest('./dist/fonts/'));
 
-    return merge(css, html, js);
+    return merge(fonts, css, html, js);
 });
 
 // run gulp

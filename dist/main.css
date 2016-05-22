@@ -1,0 +1,35 @@
+html, body {
+    overflow: hidden;
+}
+
+.position-absolute {
+	position: absolute;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: TabacGlamG1SemiBold;
+}
+
+header {
+	position: absolute;
+	opacity: 1;
+}
+
+a {
+	text-decoration: none;
+}
+
+.p5canvas {
+		position: absolute;
+    z-index: -1;
+}
+
+.title {
+	position: relative;
+	margin: auto;
+	text-align: center;
+	width: 50%;
+}
+

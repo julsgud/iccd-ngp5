@@ -437,6 +437,7 @@ function GoldCoast() {
         var fps = 64;
         var orientation = void 0;
         var tabac = void 0;
+        var growthTime = 5;
 
         // colors and refs
         var gold = { r: 163, g: 107, b: 82, a: 255 };
@@ -452,7 +453,7 @@ function GoldCoast() {
         ////////
         p.setup = function () {
             // load font
-            tabac = p.loadFont('webfonts/31267E_0_0.ttf');
+            tabac = p.loadFont('fonts/31267E_0_0.ttf');
 
             // setup canvas
             var canvas = p.createCanvas(p.windowWidth, p.windowHeight);
@@ -481,7 +482,7 @@ function GoldCoast() {
 
             for (var i = 0; i < shapes.length; i++) {
                 shapes[i].draw(p, gold);
-                shapes[i].growAndFade(p, fps, 4, maxSize);
+                shapes[i].growAndFade(p, fps, growthTime, maxSize);
             }
 
             trimArray();
