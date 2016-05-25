@@ -7,7 +7,6 @@ import appRun from './config/app.run';
 
 // 3rd party
 import 'angular-ui-router';
-// import 'p5';
 
 // templates for caching. thanks gulp!
 import './config/app.templates';

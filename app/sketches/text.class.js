@@ -5,13 +5,25 @@ export default class Text {
 		this.x = _x;
 		this.y = _y;
 		this.color = _color;
+		this.alpha = 0;
 	}
 
 	draw(p) {
 		p.textSize(this.textSize);    
 		p.textAlign(p.CENTER, p.CENTER);
-		p.fill(this.color.r, this.color.g, this.color.b, this.color.a);
+
+		p.fill(this.color.r, this.color.g, this.color.b, this.alpha);
 		p.text(this.text, this.x, this.y);
+	}
+
+	fadeIn(p, growthTime, fps) {
+		p.textSize(this.textSize);    
+		p.textAlign(p.CENTER, p.CENTER);
+
+		p.fill(this.color.r, this.color.g, this.color.b, this.alpha);
+		p.text(this.text, this.x, this.y);
+
+		this.alpha += 255/(growthTime*fps);
 	}
 	
 }

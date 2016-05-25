@@ -1,5 +1,6 @@
 import Circle from './gold-coast/circle.class';
 import Text from './text.class';
+import p5Sound from 'node_modules/p5.sound/lib/p5.sound.js';
 
 function GoldCoast() {
     'ngInject';
@@ -10,6 +11,10 @@ function GoldCoast() {
         let orientation;
         let tabac;
         let growthTime = 5;
+        let screenAdapter;
+        let pullFactor;
+        let pressFlag;
+        let posX, posY;
 
         // colors and refs
         let gold = {r: 163, g: 107, b: 82, a:255};
@@ -20,13 +25,17 @@ function GoldCoast() {
 
         // collections
         let shapes = [];
-        let texts = [];
+        let nameText = [];
+        let songText = [];
 
         ////////
         p.setup = function() {
             // load font
-            tabac = p.loadFont('fonts/31267E_0_0.ttf');
+            tabac = p.loadFont('fonts/312E5B_0_0.ttf');
+            p.textFont(tabac);
 
+            p.loadSound('assets/goldCoast/nemo.aac');
+            
             // setup canvas 
             let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
             canvas.class('p5canvas');
@@ -36,114 +45,171 @@ function GoldCoast() {
             p.smooth();
 
             // setup vars
-            orientation = screenOrientation(p.width, p.height);
-            maxSize = (orientation === 'landscape') ? p.width/2 : p.height/2;
-
-            // setup text
-            p.textFont(tabac);
-            resetText();
+            screenAdapter = screenAdapt(screenOrientation(p.width, p.height), p.width, p.height);
+            resetNameText(screenAdapter, p.width, p.height);
+            resetSongText(screenAdapter, p.width, p.height);
         };
 
         ////////
+
         p.draw = function() {
             p.background(blue.r, blue.g, blue.b);
             p.noStroke();
 
-            // draw shapes
-            fillArray();  
-
-            for (var i = 0; i < shapes.length; i++) {
-                shapes[i].draw(p, gold);
-                shapes[i].growAndFade(p, fps, growthTime, maxSize);
-            }
-
-            trimArray();
+            drawShapes(screenAdapter);
 
             // shading rectangle
             p.fill(blue.r, blue.g, blue.b, blue.a);
             p.rect(0, p.height/2, p.width, p.height/2);
 
             // draw text
-
-            for (var i = 0; i < texts.length; i++) {
-                texts[i].draw(p);
+            if (nameText[0].alpha === 255) {
+                nameText.forEach((t) => t.draw(p));
+            } else {
+                nameText.forEach((t) => t.fadeIn(p, growthTime, fps));
             }
+
+            if (songText[0].alpha === 255) {
+                songText.forEach((t) => t.draw(p));
+            } else {
+                songText.forEach((t) => t.fadeIn(p, growthTime*1.3, fps));
+            }
+            
         };
 
         ////////
 
         p.windowResized = function() {
             p.resizeCanvas(p.windowWidth, p.windowHeight);
-            orientation = screenOrientation(p.width, p.height);
-            maxSize = (orientation === 'landscape') ? p.width/2 : p.height/2;
-            resetText();
+            screenAdapter = screenAdapt(screenOrientation(p.width, p.height), p.width, p.height);
+            resetNameText(screenAdapter, p.width, p.height);
+            resetSongText(screenAdapter, p.width, p.height);
         };
 
         ////////
 
         //////// shape helpers
 
-        function fillArray() {
+        function drawShapes(screenAdapter) {
+            fillArray(screenAdapter);  
+
+            for (var i = 0; i < shapes.length; i++) {
+
+                posX = p.width/2;
+                posY = p.height/2;
+
+                if (pressFlag) {
+                    posX += mouseX/8 * i;
+                    posY += mouseY/8 * i;
+                }
+
+                shapes[i].draw(p, posX, posY, gold);
+                shapes[i].growAndFade(p, fps, growthTime, screenAdapter.maxSize);
+            }
+
+            trimArray(screenAdapter);
+        }
+
+        function fillArray(screenAdapter) {
             if(shapes.length === 0) {
                 shapes.push(new Circle());
-            } else if (shapes.length < 8 && shapes[shapes.length-1].size >= maxSize/8) {
+            } else if (shapes.length < 8 && shapes[shapes.length-1].size >= screenAdapter.maxSize/8) {
                 shapes.push(new Circle());
             }
         }
 
-        function trimArray() {
-            if(shapes[0].size >= maxSize) {
+        function trimArray(screenAdapter) {
+            if(shapes[0].size >= screenAdapter.maxSize) {
                 shapes.shift();
             }
         }
 
         //////// text helpers
-
-        function resetText() {
-            while(texts.length > 0) {
-                texts.pop();
+        function resetNameText(screenAdapter, width, height) {
+            while(nameText.length > 0) {
+                nameText.pop();
             }
 
-            texts.push(new Text(p.width/13, 'I CAN CHASE', p.width/2, p.height/8, gold));
-            texts.push(new Text(p.width/13, 'DRAGONS', p.width/2, p.height/8*1.5, gold));
-            texts.push(new Text(p.width/13, 'GOLD', p.width/2, p.height/8*7, gold));
-            texts.push(new Text(p.width/13, 'COAST', p.width/2, p.height/8*7.5, gold));
+            nameText.push(new Text(screenAdapter.nameSize, 'I CAN CHASE', screenAdapter.posX, screenAdapter.frame, gold));
+            nameText.push(new Text(screenAdapter.nameSize, 'DRAGONS', screenAdapter.posX, screenAdapter.frame + screenAdapter.nameSize, gold));
+        }
+
+        function resetSongText(screenAdapter, width, height) {
+            while(songText.length > 0) {
+                songText.pop();
+            }
+
+            songText.push(new Text(screenAdapter.songNameSize, 'GOLD', width - screenAdapter.posX, height-screenAdapter.frame-screenAdapter.songNameSize, gold));
+            songText.push(new Text(screenAdapter.songNameSize, 'COAST', width - screenAdapter.posX, height-screenAdapter.frame, gold));
         }
 
         //////// layout helpers
-
         function screenAdapt(orientation, width, height) {
             let s = {};
 
             // min and max fontsize, max size etc based on screen size
             if (orientation === 'portrait') {
-
                 // smartphone
-                if (width < 480) {
+                if (width <= 480) {
 
-                    s.fontSize = width/13;
-                    s.maxSize = width/3;
+                    s.nameSize = height/22;
+                    s.songNameSize = height/15;
+                    s.frame = height/10;
+                    s.maxSize = width - width/10*2;
+                    s.posX = width/2;
+                    s.posY = height/2;
 
                 // tablet
-                } else if (width < 1024) {
+                } else if (width <= 1024) {
 
-                // laptop
-                } else if (width < 1440) {
+                    s.nameSize = height/21;
+                    s.songNameSize = height/13;
+                    s.frame = height/8;
+                    s.maxSize = width - width/10*2.5;
+                    s.posX = width/2;
+                    s.posY = height/2;
 
-                // desktop
+                // desktop/laptop
                 } else {
 
+                    // does not apply
+                    s.nameSize = height/17;
+                    s.songNameSize = height/10;
+                    s.frame = height/5;
+                    s.maxSize = width - width/10*2.5;
+                    s.posX = width/2;
+                    s.posY = height/2;
 
                 }
 
             } else if (orientation === 'landscape') {
 
+                if (width <= 480) {
+                    // does not apply
+                // medium landscape
+                } else if (width <= 1024) {
+
+                    s.nameSize = height/21;
+                    s.songNameSize = height/13;
+                    s.frame = height/8;
+                    s.maxSize = height - height/5;
+                    s.posX = width/2;
 
 
+                // large landscape
+                } else {
+
+                    s.nameSize = height/17;
+                    s.songNameSize = height/10;
+                    s.frame = height/8;
+                    s.maxSize = height - height/5;
+                    s.posX = width/2;
+
+                }
             }
 
             return s;
-        }
+         }
 
         function screenOrientation(width, height) {
             let orientation;
@@ -154,17 +220,20 @@ function GoldCoast() {
                 orientation = 'portrait';
             }
 
-            console.log(orientation);
-
             return orientation;
-        }
+        };
 
         //////// interactivity
+
+        p.mousePressed = function() {
+            pressFlag = true;
+        }
 
         p.mouseReleased = function() {
             while(shapes.length > 0) {
                 shapes.pop();
             }
+            pressFlag = false;
         }
 
         p.touchEnded = function() {
@@ -172,7 +241,7 @@ function GoldCoast() {
                 shapes.pop();
             }
         }
-    };
+    }
 }
 
 export default GoldCoast;
