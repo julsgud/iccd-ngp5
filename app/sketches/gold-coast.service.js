@@ -15,6 +15,7 @@ function GoldCoast() {
         let pressFlag;
         let posX, posY;
         let video = false;
+        let textFlag = false;
         let player;
 
         // colors and refs
@@ -28,6 +29,7 @@ function GoldCoast() {
         let shapes = [];
         let nameText = [];
         let songText = [];
+        let texts = [];
 
         ////////
         p.setup = function() {
@@ -60,6 +62,7 @@ function GoldCoast() {
             p.noStroke();
 
             drawShapes(screenAdapter);
+            // if (textFlag) {drawTexts(p)};
 
             // shading rectangle
             p.fill(blue.r, blue.g, blue.b, blue.a);
@@ -77,7 +80,6 @@ function GoldCoast() {
             } else {
                 songText.forEach((t) => t.fadeIn(p, growthTime*.8, fps));
             }
-            
         };
 
         ////////
@@ -142,6 +144,43 @@ function GoldCoast() {
 
             songText.push(new Text(screenAdapter.songNameSize, 'GOLD', width - screenAdapter.posX, height-screenAdapter.frame-screenAdapter.songNameSize, gold));
             songText.push(new Text(screenAdapter.songNameSize, 'COAST', width - screenAdapter.posX, height-screenAdapter.frame, gold));
+        }
+
+        function textFlagIt() {
+            textFlag = true;
+        }
+
+        function fillTextsArray() {
+            if (texts.length === 0) {
+                let textX = p.random(screenAdapter.frame, p.width-screenAdapter.frame);
+                let textY = p.random(screenAdapter.frame, p.height-screenAdapter.frame);
+                let textPick = p.random(0, 1);
+                let text = (textPick > 0.5) ? 'ENTROPIA' : 'AGOSTO 2016';
+                let color = (textY >= p.height/2) ? gold : blue;
+
+                texts.push(new Text(screenAdapter.nameSize, text, textX, textY, color));
+
+            } else if (texts.length === 0 && texts[texts.length-1].alpha > 255/3) {
+                let textX = p.random(screenAdapter.frame, p.width-screenAdapter.frame);
+                let textY = p.random(screenAdapter.frame, p.height-screenAdapter.frame);
+                let textPick = p.random(0, 1);
+                let text = (textPick > 0.5) ? 'ENTROPIA' : 'AGOSTO 2016';
+                let color = (textY >= p.height/2) ? gold : blue;
+
+                texts.push(new Text(screenAdapter.nameSize, text, textX, textY, color));
+            }
+        }
+
+        function drawTexts(p) {
+            fillTextsArray(p);
+
+            for (var i = 0; i < texts.length; i++) {
+                if (texts[i].alpha === 255) {
+                    texts.forEach((t) => t.draw(p));
+                } else {
+                    texts.forEach((t) => t.fadeIn(p, growthTime*.5, fps));
+                }
+            }
         }
 
         //////// layout helpers
@@ -239,6 +278,9 @@ function GoldCoast() {
                     showinfo: '0',
                     color: 'white',
                     controls: '2'
+                },
+                events: {
+                    'onStateChange': textFlagIt
                 }
             });
 
@@ -247,6 +289,10 @@ function GoldCoast() {
         //////// interactivity
 
         p.mousePressed = function() {
+            
+        }
+
+        p.mouseReleased = function() {
             if (!video) {
                 while(shapes.length > 0) {
                     shapes.pop();
@@ -262,16 +308,20 @@ function GoldCoast() {
             }
         }
 
-        p.mouseReleased = function() {
-            // while(shapes.length > 0) {
-            //     shapes.pop();
-            // }
-        }
-
         p.touchEnded = function() {
-            // while(shapes.length > 0) {
-            //     shapes.pop();
-            // }
+            if (!video) {
+                while(shapes.length > 0) {
+                    shapes.pop();
+                }
+                createVideo();
+                screenAdapter.maxSize = (screenOrientation(p.width, p.height) === 'portrait') ? p.width*1.2 : p.height*1.2;
+                console.log(screenAdapter.maxSize);
+            } else {
+                while(shapes.length > 0) {
+                    shapes.pop();
+                }
+                console.log('video already loaded');
+            }
         }
     }
 }
