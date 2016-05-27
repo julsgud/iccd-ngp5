@@ -72,7 +72,7 @@ gulp.task('build', ['css', 'html', 'browserify'], function() {
                 .pipe(gulp.dest('./dist/'));
     var css = gulp.src('build/main.css')
                 .pipe(gulp.dest('./dist/'));
-    var fonts = gulp.src('build/fonts/31267E_0_0.ttf')
+    var fonts = gulp.src('build/fonts/312E5B_0_0.ttf')
                 .pipe(gulp.dest('./dist/fonts/'));
 
     return merge(fonts, css, html, js);
@@ -93,4 +93,20 @@ gulp.task('default', ['css', 'html', 'browserify'], function() {
     gulp.watch(views, ['views']);
     gulp.watch(js, ['browserify']);
     gulp.watch(css, ['css', 'browserify'])
+});
+
+gulp.task('serve-dist', ['css', 'html', 'browserify'], function() {
+    browserSync.init(['./dist/**/**.**'], {
+        server: './dist',
+        port: 4000,
+        notify: false,
+        ui: {
+            port: 4001
+        }
+    });
+
+    gulp.watch('app/index.html', ['html']);
+    gulp.watch(views, ['views']);
+    gulp.watch(js, ['browserify']);
+    gulp.watch(css, ['css', 'browserify']);
 });
