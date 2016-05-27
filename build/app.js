@@ -772,8 +772,11 @@ function GoldCoast() {
 
         function createVideo() {
             video = true;
-            var width = (p.width / 3).toString();
-            var height = (p.height / 3).toString();
+            var orientation = screenOrientation(p.width, p.height);
+            var preWidth = orientation === 'portrait' ? p.width / 1.5 : p.width / 3;
+            var preHeight = orientation === 'portrait' ? p.height / 4 : p.height / 3;
+            var width = preWidth.toString();
+            var height = preHeight.toString();
 
             player = new YT.Player('player', {
                 height: height,
