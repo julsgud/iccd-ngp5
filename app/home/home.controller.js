@@ -1,10 +1,11 @@
 class HomeCtrl {
-    constructor(AppConstants) {
+    constructor(AppConstants, $scope) {
         'ngInject';
 
         this.current = 'GoldCoast';
         this.appName = AppConstants.appName;
     }
+
 }
 
 export default HomeCtrl;

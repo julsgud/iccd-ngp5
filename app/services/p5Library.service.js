@@ -1,11 +1,9 @@
-import p5Library from 'p5';
+import p5L from 'p5.sound';
 
-function p5($window) {
+function p5() {
     'ngInject';
 
-    return {
-        p5: p5Library
-    };
+    return p5L;
 }
 
 export default p5;

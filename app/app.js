@@ -7,6 +7,7 @@ import appRun from './config/app.run';
 
 // 3rd party
 import 'angular-ui-router';
+import 'angular-youtube-mb';
 
 // templates for caching. thanks gulp!
 import './config/app.templates';
@@ -21,7 +22,7 @@ import './services';
 // load app
 const app = [
     'ui.router',
-    // 'p5Library',
+    'youtube-embed',
     'templates',
     'app.layout',
     'app.components',

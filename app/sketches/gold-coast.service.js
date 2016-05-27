@@ -1,6 +1,5 @@
 import Circle from './gold-coast/circle.class';
 import Text from './text.class';
-import p5Sound from 'node_modules/p5.sound/lib/p5.sound.js';
 
 function GoldCoast() {
     'ngInject';
@@ -10,11 +9,13 @@ function GoldCoast() {
         let fps = 64;
         let orientation;
         let tabac;
-        let growthTime = 5;
+        let growthTime = 3.8;
         let screenAdapter;
         let pullFactor;
         let pressFlag;
         let posX, posY;
+        let video = false;
+        let player;
 
         // colors and refs
         let gold = {r: 163, g: 107, b: 82, a:255};
@@ -33,8 +34,6 @@ function GoldCoast() {
             // load font
             tabac = p.loadFont('fonts/312E5B_0_0.ttf');
             p.textFont(tabac);
-
-            p.loadSound('assets/goldCoast/nemo.aac');
             
             // setup canvas 
             let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
@@ -43,6 +42,10 @@ function GoldCoast() {
             // drawing options
             p.frameRate(fps);
             p.smooth();
+
+            // setup soundcloud
+            // loadSounds(sounds);
+            // sounds = p5.loadSound('assets/nemo.aac');
 
             // setup vars
             screenAdapter = screenAdapt(screenOrientation(p.width, p.height), p.width, p.height);
@@ -66,13 +69,13 @@ function GoldCoast() {
             if (nameText[0].alpha === 255) {
                 nameText.forEach((t) => t.draw(p));
             } else {
-                nameText.forEach((t) => t.fadeIn(p, growthTime, fps));
+                nameText.forEach((t) => t.fadeIn(p, growthTime*.5, fps));
             }
 
             if (songText[0].alpha === 255) {
                 songText.forEach((t) => t.draw(p));
             } else {
-                songText.forEach((t) => t.fadeIn(p, growthTime*1.3, fps));
+                songText.forEach((t) => t.fadeIn(p, growthTime*.8, fps));
             }
             
         };
@@ -86,8 +89,6 @@ function GoldCoast() {
             resetSongText(screenAdapter, p.width, p.height);
         };
 
-        ////////
-
         //////// shape helpers
 
         function drawShapes(screenAdapter) {
@@ -98,10 +99,10 @@ function GoldCoast() {
                 posX = p.width/2;
                 posY = p.height/2;
 
-                if (pressFlag) {
-                    posX += mouseX/8 * i;
-                    posY += mouseY/8 * i;
-                }
+                // if (pressFlag) {
+                //     posX += mouseX/8 * i;
+                //     posY += mouseY/8 * i;
+                // }
 
                 shapes[i].draw(p, posX, posY, gold);
                 shapes[i].growAndFade(p, fps, growthTime, screenAdapter.maxSize);
@@ -223,23 +224,54 @@ function GoldCoast() {
             return orientation;
         };
 
+        //////// youtube
+
+        function createVideo() {
+            video = true;
+            let width = (p.width/3).toString();
+            let height = (p.height/3).toString();
+
+            player = new YT.Player('player', {
+                height: height,
+                width: width,
+                videoId: 'RDXwUfiiZk4',
+                playerVars: {
+                    showinfo: '0',
+                    color: 'white',
+                    controls: '2'
+                }
+            });
+
+        }
+
         //////// interactivity
 
         p.mousePressed = function() {
-            pressFlag = true;
+            if (!video) {
+                while(shapes.length > 0) {
+                    shapes.pop();
+                }
+                createVideo();
+                screenAdapter.maxSize = (screenOrientation(p.width, p.height) === 'portrait') ? p.width*1.2 : p.height*1.2;
+                console.log(screenAdapter.maxSize);
+            } else {
+                while(shapes.length > 0) {
+                    shapes.pop();
+                }
+                console.log('video already loaded');
+            }
         }
 
         p.mouseReleased = function() {
-            while(shapes.length > 0) {
-                shapes.pop();
-            }
-            pressFlag = false;
+            // while(shapes.length > 0) {
+            //     shapes.pop();
+            // }
         }
 
         p.touchEnded = function() {
-            while(shapes.length > 0) {
-                shapes.pop();
-            }
+            // while(shapes.length > 0) {
+            //     shapes.pop();
+            // }
         }
     }
 }

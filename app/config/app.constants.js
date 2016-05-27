@@ -1,6 +1,6 @@
 const AppConstants = {
     appName: 'iccd',
-    soundcloud: 'https://soundcloud.api'
+    SC: 'https://soundcloud.com/i-can-chase-dragons/'
 };
 
 export default AppConstants;

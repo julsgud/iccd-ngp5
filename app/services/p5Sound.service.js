@@ -1,13 +1,13 @@
-import p5S from 'node_modules/p5.sound';
+import SC from 'node-soundcloud';
 
-function p5Sound() {
+function soundcloud() {
     'ngInject';
 
-    let p5Sound = p5S;
+    let sc = SC;
 
     return {
-        service: p5Sound
+        service: sc
     };
 }
 
-export default p5Sound;
+export default soundcloud;
