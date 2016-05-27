@@ -273,7 +273,7 @@ function GoldCoast() {
             player = new YT.Player('player', {
                 height: height,
                 width: width,
-                videoId: 'RDXwUfiiZk4',
+                videoId: '2MWrSoX2v70',
                 playerVars: {
                     showinfo: '0',
                     color: 'white',
