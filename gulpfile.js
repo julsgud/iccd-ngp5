@@ -1,20 +1,21 @@
 'use strict';
 
-var gulp = require('gulp');
-var notify = require('gulp-notify');
-var source = require('vinyl-source-stream');
-var browserify = require('browserify');
-var babelify = require('babelify');
-var ngAnnotate = require('browserify-ngannotate');
-var browserSync = require('browser-sync').create();
-var rename = require('gulp-rename');
+var gulp          = require('gulp');
+var notify        = require('gulp-notify');
+var source        = require('vinyl-source-stream');
+var browserify    = require('browserify');
+var babelify      = require('babelify');
+var ngAnnotate    = require('browserify-ngannotate');
+var browserSync   = require('browser-sync').create();
+var rename        = require('gulp-rename');
 var templateCache = require('gulp-angular-templatecache');
-var uglify = require('gulp-uglify');
-var merge = require('merge-stream');
+var uglify        = require('gulp-uglify');
+var merge         = require('merge-stream');
 
 // files
-var js = 'app/js/**/*.js';
-var views = 'app/js/**/*.html';
+var js = 'app/**/*.js';
+var views = 'app/**/*.html';
+var css = 'app/styles/main.css';
 
 // error handling
 var interceptErrors = function(error) {
@@ -56,19 +57,29 @@ gulp.task('html', function() {
         .pipe(gulp.dest('./build/'));
 });
 
+gulp.task('css', function() {
+    return gulp.src('app/styles/main.css')
+        .on('error', interceptErrors)
+        .pipe(gulp.dest('./build'));
+});
+
 // ready for dist?! run build
-gulp.task('build', ['html', 'browserify'], function() {
+gulp.task('build', ['css', 'html', 'browserify'], function() {
     var html = gulp.src('build/index.html')
                 .pipe(gulp.dest('./dist/'));
     var js = gulp.src('build/app.js')
                 .pipe(uglify())
                 .pipe(gulp.dest('./dist/'));
+    var css = gulp.src('build/main.css')
+                .pipe(gulp.dest('./dist/'));
+    var fonts = gulp.src('build/fonts/31267E_0_0.ttf')
+                .pipe(gulp.dest('./dist/fonts/'));
 
-    return merge(html, js);
+    return merge(fonts, css, html, js);
 });
 
 // run gulp
-gulp.task('default', ['html', 'browserify'], function() {
+gulp.task('default', ['css', 'html', 'browserify'], function() {
     browserSync.init(['./build/**/**.**'], {
         server: './build',
         port: 4000,
@@ -81,4 +92,5 @@ gulp.task('default', ['html', 'browserify'], function() {
     gulp.watch('app/index.html', ['html']);
     gulp.watch(views, ['views']);
     gulp.watch(js, ['browserify']);
+    gulp.watch(css, ['css', 'browserify'])
 });
