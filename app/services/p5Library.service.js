@@ -1,4 +1,4 @@
-import p5L from 'p5.sound';
+// import p5L from 'p5.sound';
 
 function p5() {
     'ngInject';
