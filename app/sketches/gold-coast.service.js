@@ -1,6 +1,6 @@
-import Circle from './gold-coast/circle.class';
-import Text from './text.class';
-import Text2 from './text2.class';
+import Circle from './classes/circle.class';
+import Text from './classes/text.class';
+import Text2 from './classes/text2.class';
 
 function GoldCoast() {
     'ngInject';

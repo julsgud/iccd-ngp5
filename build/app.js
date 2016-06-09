@@ -491,77 +491,70 @@ var _filterRect = require('./filter-rect.class');
 
 var _filterRect2 = _interopRequireDefault(_filterRect);
 
-var _text2 = require('./text.class');
+var _text = require('./text.class');
 
-var _text3 = _interopRequireDefault(_text2);
+var _text2 = _interopRequireDefault(_text);
 
-var _text4 = require('./text2.class');
+var _text3 = require('./text2.class');
 
-var _text5 = _interopRequireDefault(_text4);
+var _text4 = _interopRequireDefault(_text3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function frontColorCoast() {
+function CiclosLyrics() {
     'ngInject';
 
     return function (p) {
         // setup
         var fps = 60;
         var resolution = 2048;
-        var orientation = void 0;
         var tabac = void 0;
         var time = 5;
         var screenAdapter = void 0;
-        var pressFlag = void 0;
-        var posX = void 0,
-            posY = void 0;
         var video = false;
         var textFlag = false;
         var fadeFlag = false;
         var saveFlag = false;
-
-        var player = void 0;
         var timer = 0;
         var lyricsLength = 7.4;
+
+        // video
+        var player = void 0;
 
         // colors and refs
         var frontColor = { r: 243, g: 158, b: 161, a: 255 };
         var backColor = { r: 159, g: 107, b: 85, a: 255 };
-
-        // dims
-        var maxSize = void 0;
 
         // collections
         var shapes = [];
         var shapes2 = [];
         var nameText = [];
         var songText = [];
-        var texts = [];
         var lyrics = [];
-        var lyricsOne = [];
-        var lyricsTwo = [];
-        var lyricsThree = [];
-        var lyricsFour = [];
+        var line1 = [];
+        var line2 = [];
+        var line3 = [];
+        var line4 = [];
         var lyricFlags = [{ time: 4750, word: 'sube ', insert: function insert() {
-                lyricsThree.push(this.word);
+                line3.push(this.word);
             } }, { time: 5050, word: 'hasta', insert: function insert() {
-                lyricsThree.push(this.word);
+                line3.push(this.word);
             } }, { time: 5640, word: 're', insert: function insert() {
-                lyricsFour.unshift(this.word);
+                line4.unshift(this.word);
             } }, { time: 5940, word: 'orden', insert: function insert() {
-                lyricsTwo.push(this.word);
+                line2.push(this.word);
             } }, { time: 2220, word: 'una ', insert: function insert() {
-                lyricsOne.push(this.word);
+                line1.push(this.word);
             } }, { time: 2370, word: 'ola ', insert: function insert() {
-                lyricsOne.push(this.word);
+                line1.push(this.word);
             } }, { time: 2550, word: 'entre', insert: function insert() {
-                lyricsOne.push(this.word);
+                line1.push(this.word);
             } }, { time: 3120, word: 'el ', insert: function insert() {
-                lyricsTwo.unshift(this.word);
+                line2.unshift(this.word);
             } }, { time: 3270, word: 'des', insert: function insert() {
-                lyricsTwo.splice(1, 0, this.word);
+                line2.splice(1, 0, this.word);
             } }, { time: 3570, word: 'ventar', insert: function insert() {
-                lyricsFour.push(this.word);
+                line4.push(this.word);
             } }];
         var lines = [];
         var rects = [];
@@ -572,34 +565,24 @@ function frontColorCoast() {
             tabac = p.loadFont('fonts/312E5B_0_0.ttf');
             p.textFont(tabac);
 
-            // setup canvas
-            //let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
-            var canvas = p.createCanvas(resolution / 2, resolution / 2);
+            // canvas
+            var canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+            // let canvas = p.createCanvas(resolution/2, resolution/2);
             canvas.class('p5canvas');
 
-            // drawing options
+            // options
             p.frameRate(fps);
             p.smooth();
 
-            // loadSounds(sounds);
-            // sounds = p5.loadSound('assets/nemo.aac');
-
-            // setup vars
-            screenAdapter = screenAdapt(screenOrientation(p.width, p.height), p.width, p.height);
+            // init
+            screenAdapter = screenAdapt(windowType(p.width, p.height), p.width, p.height);
             rects[0] = new _filterRect2.default();
-            // resetNameText(screenAdapter, p.width, p.height);
-            // resetSongText(screenAdapter, p.width, p.height);
             resetLyrics(screenAdapter, p.width, p.height);
         };
 
         ////////
 
         p.draw = function () {
-            var measure = 1000 / fps;
-            var timer = p.frameCount * measure;
-            if (p.frameCount = 1) {
-                p.saveFrames('ciclos1_', 'png', 8, 15);
-            };
             p.background(backColor.r, backColor.g, backColor.b);
             p.noStroke();
 
@@ -610,26 +593,14 @@ function frontColorCoast() {
             drawShapes(shapes2, p.width / 2 - p.width / 6, 'bottom');
 
             drawLyrics();
-
-            // if(fadeFlag) {rects[0].fadeIn()};
-            // rects[0].draw(p, 0, 0, p.width, backColor);
-
-            // if (textFlag) {drawTexts(p)};
-            // for (var i = 0; i < lyrics.length; i++) {
-            //     lyrics[i].draw(p, lines[i]);
-            // }
-
-            // if(timer > 7130 && timer < 7130 + measure) {p.saveFrames('ciclos3_', 'png', 15, fps);}
         };
 
         ////////
 
         p.windowResized = function () {
             p.resizeCanvas(p.windowWidth, p.windowHeight);
-            screenAdapter = screenAdapt(screenOrientation(p.width, p.height), p.width, p.height);
-            // resetLyrics(screenAdapter, p.width, p.height);
-            // resetNameText(screenAdapter, p.width, p.height);
-            // resetSongText(screenAdapter, p.width, p.height);
+            screenAdapter = screenAdapt(windowType(p.width, p.height), p.width, p.height);
+            resetLyrics(screenAdapter, p.width, p.height);
         };
 
         //////// shape helpers
@@ -639,8 +610,8 @@ function frontColorCoast() {
 
             for (var i = 0; i < array.length; i++) {
 
-                posX = positionX;
-                posY = p.height / 2;
+                var posX = positionX;
+                var posY = p.height / 2;
 
                 array[i].draw(p, posX, posY, frontColor, position, backColor);
                 array[i].shrinkAndFade(p, fps, time, screenAdapter.maxSize);
@@ -663,36 +634,23 @@ function frontColorCoast() {
             }
         }
 
-        //////// text helpers
-        // function resetNameText(screenAdapter, width, height) {
-        //     while(nameText.length > 0) {
-        //         nameText.pop();
-        //     }
-
-        //     nameText.push(new Text(screenAdapter.nameSize, 'I CAN CHASE', screenAdapter.posX, screenAdapter.frame, frontColor));
-        //     nameText.push(new Text(screenAdapter.nameSize, 'DRAGONS', screenAdapter.posX, screenAdapter.frame + screenAdapter.nameSize, frontColor));
-        // }
-
-        // function save() {
-
-        //     p.saveFrames('ciclos_', 'png', 18, fps);
-        // }
+        //////// lyric helpers
 
         function resetLyrics(screenAdapter, width, height) {
             while (lyrics.length > 0) {
                 lyrics.pop();
             }
 
-            lyrics.push(new _text5.default(null, screenAdapter.songNameSize + 10, width / 2, screenAdapter.frame, frontColor));
-            lyrics.push(new _text5.default(null, screenAdapter.songNameSize + 10, width / 2, screenAdapter.frame + screenAdapter.songNameSize + 10, frontColor));
-            lyrics.push(new _text5.default(null, screenAdapter.songNameSize + 10, width / 2, height - screenAdapter.frame * 2, frontColor));
-            lyrics.push(new _text5.default(null, screenAdapter.songNameSize + 10, width / 2, height - screenAdapter.frame * 2 + screenAdapter.songNameSize + 10, frontColor));
+            lyrics.push(new _text4.default(null, screenAdapter.songNameSize + 10, width / 2, screenAdapter.frame, frontColor));
+            lyrics.push(new _text4.default(null, screenAdapter.songNameSize + 10, width / 2, screenAdapter.frame + screenAdapter.songNameSize + 10, frontColor));
+            lyrics.push(new _text4.default(null, screenAdapter.songNameSize + 10, width / 2, height - screenAdapter.frame * 2, frontColor));
+            lyrics.push(new _text4.default(null, screenAdapter.songNameSize + 10, width / 2, height - screenAdapter.frame * 2 + screenAdapter.songNameSize + 10, frontColor));
         }
 
         function wordPusher() {
             var measure = 1000 / fps;
             var timer = p.frameCount * measure;
-            // push each word into its line array with time
+
             for (var i = 0; i < lyricFlags.length; i++) {
                 if (timer > lyricFlags[i].time - measure / 2 && timer <= lyricFlags[i].time) {
                     lyricFlags[i].insert();
@@ -702,7 +660,6 @@ function frontColorCoast() {
             if (timer > 7130 && timer < 7130 + measure) {
                 screenAdapter.maxSize = p.width;
             }
-            // if (timer > 10700 - measure && timer < 10700 + measure) {screenAdapter.maxSize = p.width*2}
         }
 
         function drawLyrics() {
@@ -712,80 +669,35 @@ function frontColorCoast() {
         }
 
         function lyricsConcat() {
-            if (lyricsOne.length > 0) {
-                lines[0] = lyricsOne.join('');
+            if (line1.length > 0) {
+                lines[0] = line1.join('');
             }
-            if (lyricsTwo.length > 0) {
-                lines[1] = lyricsTwo.join('');
+            if (line2.length > 0) {
+                lines[1] = line2.join('');
             }
-            if (lyricsThree.length > 0) {
-                lines[2] = lyricsThree.join('');
+            if (line3.length > 0) {
+                lines[2] = line3.join('');
             }
-            if (lyricsFour.length > 0) {
-                lines[3] = lyricsFour.join('');
+            if (line4.length > 0) {
+                lines[3] = line4.join('');
             }
         }
 
         function popAll() {
-            while (lyricsOne > 0) {
-                lyricsOne.pop();
+            while (line1 > 0) {
+                line1.pop();
             }
 
-            while (lyricsTwo > 0) {
-                lyricsTwo.pop();
+            while (line2 > 0) {
+                line2.pop();
             }
 
-            while (lyricsThree > 0) {
-                lyricsThree.pop();
-            }
-        }
-
-        function resetSongText(screenAdapter, width, height) {
-            while (songText.length > 0) {
-                songText.pop();
+            while (line3 > 0) {
+                line3.pop();
             }
 
-            songText.push(new _text3.default(screenAdapter.songNameSize, 'GOLD', width - screenAdapter.posX, height - screenAdapter.frame - screenAdapter.songNameSize, frontColor));
-            songText.push(new _text3.default(screenAdapter.songNameSize, 'COAST', width - screenAdapter.posX, height - screenAdapter.frame, frontColor));
-        }
-
-        function textFlagIt() {
-            textFlag = true;
-        }
-
-        function fillTextsArray() {
-            if (texts.length === 0) {
-                var textX = p.random(screenAdapter.frame, p.width - screenAdapter.frame);
-                var textY = p.random(screenAdapter.frame, p.height - screenAdapter.frame);
-                var textPick = p.random(0, 1);
-                var text = textPick > 0.5 ? 'ENTROPIA' : 'AGOSTO 2016';
-                var color = textY >= p.height / 2 ? frontColor : backColor;
-
-                texts.push(new _text3.default(screenAdapter.nameSize, text, textX, textY, color));
-            } else if (texts.length === 0 && texts[texts.length - 1].alpha > 255 / 3) {
-                var _textX = p.random(screenAdapter.frame, p.width - screenAdapter.frame);
-                var _textY = p.random(screenAdapter.frame, p.height - screenAdapter.frame);
-                var _textPick = p.random(0, 1);
-                var _text = _textPick > 0.5 ? 'ENTROPIA' : 'AGOSTO 2016';
-                var _color = _textY >= p.height / 2 ? frontColor : backColor;
-
-                texts.push(new _text3.default(screenAdapter.nameSize, _text, _textX, _textY, _color));
-            }
-        }
-
-        function drawTexts(p) {
-            fillTextsArray(p);
-
-            for (var i = 0; i < texts.length; i++) {
-                if (texts[i].alpha === 255) {
-                    texts.forEach(function (t) {
-                        return t.draw(p);
-                    });
-                } else {
-                    texts.forEach(function (t) {
-                        return t.fadeIn(p, growthTime * .5, fps);
-                    });
-                }
+            while (line4 > 0) {
+                line3.pop();
             }
         }
 
@@ -793,61 +705,55 @@ function frontColorCoast() {
         function screenAdapt(orientation, width, height) {
             var s = {};
 
-            // min and max fontsize, max size etc based on screen size
-            if (orientation === 'portrait') {
-                // smartphone
-                if (width <= 480) {
-                    console.log(3);
-                    s.nameSize = height / 22;
-                    s.songNameSize = height / 15;
-                    s.frame = height / 10;
-                    s.maxSize = width - width / 3;
-                    s.posX = width / 2;
-                    s.posY = height / 2;
+            switch (orientation) {
+                case 'portrait':
 
-                    // tablet
-                } else if (width <= 1024) {
-                        console.log('2');
-                        s.nameSize = height / 21;
-                        s.songNameSize = height / 13;
+                    // small
+                    if (width <= 480) {
+
+                        s.nameSize = height / 22;
+                        s.songNameSize = height / 15;
                         s.frame = height / 10;
                         s.maxSize = width - width / 3;
                         s.posX = width / 2;
                         s.posY = height / 2;
 
-                        // desktop/laptop
-                    } else {
-                            console.log('1');
-                            // does not apply
-                            s.nameSize = height / 17;
-                            s.songNameSize = height / 10;
-                            s.frame = height / 5;
+                        // medium
+                    } else if (width <= 1024) {
+
+                            s.nameSize = height / 21;
+                            s.songNameSize = height / 13;
+                            s.frame = height / 10;
                             s.maxSize = width - width / 3;
                             s.posX = width / 2;
                             s.posY = height / 2;
-                        }
-            } else if (orientation === 'landscape') {
 
-                if (width < 480) {
-                    // does not apply, always portrait
+                            // large
+                        } else {
+
+                                s.nameSize = height / 17;
+                                s.songNameSize = height / 10;
+                                s.frame = height / 5;
+                                s.maxSize = width - width / 3;
+                                s.posX = width / 2;
+                                s.posY = height / 2;
+                            }
+
+                    break;
+
+                case 'landscape':
 
                     // medium
-                    // } else if (width <= 1024) {
+                    if (width <= 1024) {
 
-                    //     s.nameSize = height/21;
-                    //     s.songNameSize = height/13;
-                    //     s.frame = height/10;
-                    //     s.maxSize = height - height/3;
-                    //     s.posX = width/2;
+                        s.nameSize = height / 21;
+                        s.songNameSize = height / 10;
+                        s.frame = height / 10;
+                        s.maxSize = width - width / 3;
+                        s.posX = width / 2;
+                        s.posY = height / 2;
+                    } else {
 
-                    // large landscape
-                } else {
-                        // console.log('large');
-                        // s.nameSize = height/17;
-                        // s.songNameSize = height/10;
-                        // s.frame = height/10;
-                        // s.maxSize = height - height/5;
-                        // s.posX = width/2;
                         s.nameSize = height / 21;
                         s.songNameSize = height / 10;
                         s.frame = height / 10;
@@ -855,20 +761,34 @@ function frontColorCoast() {
                         s.posX = width / 2;
                         s.posY = height / 2;
                     }
+
+                    break;
+
+                case 'square':
+
+                    s.nameSize = height / 21;
+                    s.songNameSize = height / 10;
+                    s.frame = height / 10;
+                    s.maxSize = width - width / 3;
+                    s.posX = width / 2;
+                    s.posY = height / 2;
+
+                    break;
             }
 
             return s;
         }
 
-        function screenOrientation(width, height) {
+        function windowType(width, height) {
             var orientation = void 0;
 
-            if (width >= height) {
-                orientation = 'landscape';
+            if (width = height) {
+                orientation = 'square';
+            } else if (width > height) {
+                orientation = 'lanscape';
             } else {
                 orientation = 'portrait';
             }
-            console.log(orientation);
 
             return orientation;
         };
@@ -877,7 +797,7 @@ function frontColorCoast() {
 
         function createVideo() {
             video = true;
-            var orientation = screenOrientation(p.width, p.height);
+            var orientation = windowType(p.width, p.height);
             var preWidth = orientation === 'portrait' ? p.width / 1.5 : p.width / 3;
             var preHeight = orientation === 'portrait' ? p.height / 4 : p.height / 3;
             var width = preWidth.toString();
@@ -922,7 +842,7 @@ function frontColorCoast() {
             //         shapes.pop();
             //     }
             //     createVideo();
-            //     screenAdapter.maxSize = (screenOrientation(p.width, p.height) === 'portrait') ? p.width*1.2 : p.height*1.2;
+            //     screenAdapter.maxSize = (windowType(p.width, p.height) === 'portrait') ? p.width*1.2 : p.height*1.2;
             //     console.log(screenAdapter.maxSize);
             // } else {
             //     while(shapes.length > 0) {
@@ -938,7 +858,7 @@ function frontColorCoast() {
             //         shapes.pop();
             //     }
             //     createVideo();
-            //     screenAdapter.maxSize = (screenOrientation(p.width, p.height) === 'portrait') ? p.width*1.2 : p.height*1.2;
+            //     screenAdapter.maxSize = (windowType(p.width, p.height) === 'portrait') ? p.width*1.2 : p.height*1.2;
             //     console.log(screenAdapter.maxSize);
             // } else {
             //     while(shapes.length > 0) {
@@ -950,7 +870,7 @@ function frontColorCoast() {
     };
 }
 
-exports.default = frontColorCoast;
+exports.default = CiclosLyrics;
 
 },{"./filter-rect.class":19,"./semi.class":23,"./text.class":24,"./text2.class":25}],19:[function(require,module,exports){
 "use strict";
