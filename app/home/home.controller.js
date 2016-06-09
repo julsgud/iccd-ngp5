@@ -2,7 +2,7 @@ class HomeCtrl {
     constructor(AppConstants, $scope) {
         'ngInject';
 
-        this.current = 'GoldCoast';
+        this.current = 'CiclosLyrics';
         this.appName = AppConstants.appName;
     }
 

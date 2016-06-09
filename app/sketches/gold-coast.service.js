@@ -33,6 +33,7 @@ function GoldCoast() {
         let lyricsTwo = [];
         let lyricsThree = [];
         let lines = [];
+        let rects = [];
 
         ////////
         p.setup = function() {

@@ -60,7 +60,7 @@ _angular2.default.module('app').run(_app6.default);
 
 _angular2.default.bootstrap(document, ['app'], { strictDi: true });
 
-},{"./components":2,"./config/app.config":4,"./config/app.constants":5,"./config/app.run":6,"./config/app.templates":7,"./home":10,"./layout":13,"./services":14,"./sketches":20,"angular":26,"angular-ui-router":23,"angular-youtube-mb":24}],2:[function(require,module,exports){
+},{"./components":2,"./config/app.config":4,"./config/app.constants":5,"./config/app.run":6,"./config/app.templates":7,"./home":10,"./layout":13,"./services":14,"./sketches":22,"angular":29,"angular-ui-router":26,"angular-youtube-mb":27}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -83,7 +83,7 @@ componentsModule.directive('p5', _p2.default);
 
 exports.default = componentsModule;
 
-},{"./p5.directive":3,"angular":26}],3:[function(require,module,exports){
+},{"./p5.directive":3,"angular":29}],3:[function(require,module,exports){
 'use strict';
 
 p5.$inject = ["$window", "$state", "p5Wrapper"];
@@ -242,7 +242,7 @@ var HomeCtrl = function HomeCtrl(AppConstants, $scope) {
 
     _classCallCheck(this, HomeCtrl);
 
-    this.current = 'GoldCoast';
+    this.current = 'CiclosLyrics';
     this.appName = AppConstants.appName;
 };
 HomeCtrl.$inject = ["AppConstants", "$scope"];
@@ -278,7 +278,7 @@ homeModule.controller('HomeCtrl', _home4.default);
 
 exports.default = homeModule;
 
-},{"./home.config":8,"./home.controller":9,"angular":26}],11:[function(require,module,exports){
+},{"./home.config":8,"./home.controller":9,"angular":29}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -354,7 +354,7 @@ layoutModule.component('appFooter', _footer2.default);
 
 exports.default = layoutModule;
 
-},{"./footer.component":11,"./header.component":12,"angular":26}],14:[function(require,module,exports){
+},{"./footer.component":11,"./header.component":12,"angular":29}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -392,7 +392,7 @@ servicesModule.factory('SC', _soundcloud2.default);
 
 exports.default = servicesModule;
 
-},{"./p5Library.service":15,"./p5Wrapper.service":16,"./soundcloud.service":17,"angular":26}],15:[function(require,module,exports){
+},{"./p5Library.service":15,"./p5Wrapper.service":16,"./soundcloud.service":17,"angular":29}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -455,7 +455,7 @@ function p5Wrapper($injector) {
 
 exports.default = p5Wrapper;
 
-},{"p5":27}],17:[function(require,module,exports){
+},{"p5":30}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -476,7 +476,522 @@ function soundcloud() {
 
 exports.default = soundcloud;
 
-},{"soundcloud":28}],18:[function(require,module,exports){
+},{"soundcloud":31}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _semi = require('./semi.class');
+
+var _semi2 = _interopRequireDefault(_semi);
+
+var _filterRect = require('./filter-rect.class');
+
+var _filterRect2 = _interopRequireDefault(_filterRect);
+
+var _text2 = require('./text.class');
+
+var _text3 = _interopRequireDefault(_text2);
+
+var _text4 = require('./text2.class');
+
+var _text5 = _interopRequireDefault(_text4);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function frontColorCoast() {
+    'ngInject';
+
+    return function (p) {
+        // setup
+        var fps = 60;
+        var resolution = 2048;
+        var orientation = void 0;
+        var tabac = void 0;
+        var time = 5;
+        var screenAdapter = void 0;
+        var pressFlag = void 0;
+        var posX = void 0,
+            posY = void 0;
+        var video = false;
+        var textFlag = false;
+        var fadeFlag = false;
+        var saveFlag = false;
+
+        var player = void 0;
+        var timer = 0;
+        var lyricsLength = 7.4;
+
+        // colors and refs
+        var frontColor = { r: 243, g: 158, b: 161, a: 255 };
+        var backColor = { r: 159, g: 107, b: 85, a: 255 };
+
+        // dims
+        var maxSize = void 0;
+
+        // collections
+        var shapes = [];
+        var shapes2 = [];
+        var nameText = [];
+        var songText = [];
+        var texts = [];
+        var lyrics = [];
+        var lyricsOne = [];
+        var lyricsTwo = [];
+        var lyricsThree = [];
+        var lyricsFour = [];
+        var lyricFlags = [{ time: 4750, word: 'sube ', insert: function insert() {
+                lyricsThree.push(this.word);
+            } }, { time: 5050, word: 'hasta', insert: function insert() {
+                lyricsThree.push(this.word);
+            } }, { time: 5640, word: 're', insert: function insert() {
+                lyricsFour.unshift(this.word);
+            } }, { time: 5940, word: 'orden', insert: function insert() {
+                lyricsTwo.push(this.word);
+            } }, { time: 2220, word: 'una ', insert: function insert() {
+                lyricsOne.push(this.word);
+            } }, { time: 2370, word: 'ola ', insert: function insert() {
+                lyricsOne.push(this.word);
+            } }, { time: 2550, word: 'entre', insert: function insert() {
+                lyricsOne.push(this.word);
+            } }, { time: 3120, word: 'el ', insert: function insert() {
+                lyricsTwo.unshift(this.word);
+            } }, { time: 3270, word: 'des', insert: function insert() {
+                lyricsTwo.splice(1, 0, this.word);
+            } }, { time: 3570, word: 'ventar', insert: function insert() {
+                lyricsFour.push(this.word);
+            } }];
+        var lines = [];
+        var rects = [];
+
+        ////////
+        p.setup = function () {
+            // load font
+            tabac = p.loadFont('fonts/312E5B_0_0.ttf');
+            p.textFont(tabac);
+
+            // setup canvas
+            //let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+            var canvas = p.createCanvas(resolution / 2, resolution / 2);
+            canvas.class('p5canvas');
+
+            // drawing options
+            p.frameRate(fps);
+            p.smooth();
+
+            // loadSounds(sounds);
+            // sounds = p5.loadSound('assets/nemo.aac');
+
+            // setup vars
+            screenAdapter = screenAdapt(screenOrientation(p.width, p.height), p.width, p.height);
+            rects[0] = new _filterRect2.default();
+            // resetNameText(screenAdapter, p.width, p.height);
+            // resetSongText(screenAdapter, p.width, p.height);
+            resetLyrics(screenAdapter, p.width, p.height);
+        };
+
+        ////////
+
+        p.draw = function () {
+            var measure = 1000 / fps;
+            var timer = p.frameCount * measure;
+            if (p.frameCount = 1) {
+                p.saveFrames('ciclos1_', 'png', 8, 15);
+            };
+            p.background(backColor.r, backColor.g, backColor.b);
+            p.noStroke();
+
+            wordPusher();
+            lyricsConcat();
+
+            drawShapes(shapes, p.width / 2 + p.width / 6, 'top');
+            drawShapes(shapes2, p.width / 2 - p.width / 6, 'bottom');
+
+            drawLyrics();
+
+            // if(fadeFlag) {rects[0].fadeIn()};
+            // rects[0].draw(p, 0, 0, p.width, backColor);
+
+            // if (textFlag) {drawTexts(p)};
+            // for (var i = 0; i < lyrics.length; i++) {
+            //     lyrics[i].draw(p, lines[i]);
+            // }
+
+            // if(timer > 7130 && timer < 7130 + measure) {p.saveFrames('ciclos3_', 'png', 15, fps);}
+        };
+
+        ////////
+
+        p.windowResized = function () {
+            p.resizeCanvas(p.windowWidth, p.windowHeight);
+            screenAdapter = screenAdapt(screenOrientation(p.width, p.height), p.width, p.height);
+            // resetLyrics(screenAdapter, p.width, p.height);
+            // resetNameText(screenAdapter, p.width, p.height);
+            // resetSongText(screenAdapter, p.width, p.height);
+        };
+
+        //////// shape helpers
+
+        function drawShapes(array, positionX, position) {
+            fill(array);
+
+            for (var i = 0; i < array.length; i++) {
+
+                posX = positionX;
+                posY = p.height / 2;
+
+                array[i].draw(p, posX, posY, frontColor, position, backColor);
+                array[i].shrinkAndFade(p, fps, time, screenAdapter.maxSize);
+            }
+
+            trim(array);
+        }
+
+        function fill(array) {
+            if (array.length === 0) {
+                array.push(new _semi2.default(screenAdapter.maxSize));
+            } else if (array.length < 8 && array[array.length - 1].size <= screenAdapter.maxSize / 8 * 7) {
+                array.push(new _semi2.default(screenAdapter.maxSize));
+            }
+        }
+
+        function trim(array) {
+            if (array[0].size <= 0) {
+                array.shift();
+            }
+        }
+
+        //////// text helpers
+        // function resetNameText(screenAdapter, width, height) {
+        //     while(nameText.length > 0) {
+        //         nameText.pop();
+        //     }
+
+        //     nameText.push(new Text(screenAdapter.nameSize, 'I CAN CHASE', screenAdapter.posX, screenAdapter.frame, frontColor));
+        //     nameText.push(new Text(screenAdapter.nameSize, 'DRAGONS', screenAdapter.posX, screenAdapter.frame + screenAdapter.nameSize, frontColor));
+        // }
+
+        // function save() {
+
+        //     p.saveFrames('ciclos_', 'png', 18, fps);
+        // }
+
+        function resetLyrics(screenAdapter, width, height) {
+            while (lyrics.length > 0) {
+                lyrics.pop();
+            }
+
+            lyrics.push(new _text5.default(null, screenAdapter.songNameSize + 10, width / 2, screenAdapter.frame, frontColor));
+            lyrics.push(new _text5.default(null, screenAdapter.songNameSize + 10, width / 2, screenAdapter.frame + screenAdapter.songNameSize + 10, frontColor));
+            lyrics.push(new _text5.default(null, screenAdapter.songNameSize + 10, width / 2, height - screenAdapter.frame * 2, frontColor));
+            lyrics.push(new _text5.default(null, screenAdapter.songNameSize + 10, width / 2, height - screenAdapter.frame * 2 + screenAdapter.songNameSize + 10, frontColor));
+        }
+
+        function wordPusher() {
+            var measure = 1000 / fps;
+            var timer = p.frameCount * measure;
+            // push each word into its line array with time
+            for (var i = 0; i < lyricFlags.length; i++) {
+                if (timer > lyricFlags[i].time - measure / 2 && timer <= lyricFlags[i].time) {
+                    lyricFlags[i].insert();
+                }
+            }
+
+            if (timer > 7130 && timer < 7130 + measure) {
+                screenAdapter.maxSize = p.width;
+            }
+            // if (timer > 10700 - measure && timer < 10700 + measure) {screenAdapter.maxSize = p.width*2}
+        }
+
+        function drawLyrics() {
+            for (var i = 0; i < lyrics.length; i++) {
+                lyrics[i].draw(p, lines[i]);
+            }
+        }
+
+        function lyricsConcat() {
+            if (lyricsOne.length > 0) {
+                lines[0] = lyricsOne.join('');
+            }
+            if (lyricsTwo.length > 0) {
+                lines[1] = lyricsTwo.join('');
+            }
+            if (lyricsThree.length > 0) {
+                lines[2] = lyricsThree.join('');
+            }
+            if (lyricsFour.length > 0) {
+                lines[3] = lyricsFour.join('');
+            }
+        }
+
+        function popAll() {
+            while (lyricsOne > 0) {
+                lyricsOne.pop();
+            }
+
+            while (lyricsTwo > 0) {
+                lyricsTwo.pop();
+            }
+
+            while (lyricsThree > 0) {
+                lyricsThree.pop();
+            }
+        }
+
+        function resetSongText(screenAdapter, width, height) {
+            while (songText.length > 0) {
+                songText.pop();
+            }
+
+            songText.push(new _text3.default(screenAdapter.songNameSize, 'GOLD', width - screenAdapter.posX, height - screenAdapter.frame - screenAdapter.songNameSize, frontColor));
+            songText.push(new _text3.default(screenAdapter.songNameSize, 'COAST', width - screenAdapter.posX, height - screenAdapter.frame, frontColor));
+        }
+
+        function textFlagIt() {
+            textFlag = true;
+        }
+
+        function fillTextsArray() {
+            if (texts.length === 0) {
+                var textX = p.random(screenAdapter.frame, p.width - screenAdapter.frame);
+                var textY = p.random(screenAdapter.frame, p.height - screenAdapter.frame);
+                var textPick = p.random(0, 1);
+                var text = textPick > 0.5 ? 'ENTROPIA' : 'AGOSTO 2016';
+                var color = textY >= p.height / 2 ? frontColor : backColor;
+
+                texts.push(new _text3.default(screenAdapter.nameSize, text, textX, textY, color));
+            } else if (texts.length === 0 && texts[texts.length - 1].alpha > 255 / 3) {
+                var _textX = p.random(screenAdapter.frame, p.width - screenAdapter.frame);
+                var _textY = p.random(screenAdapter.frame, p.height - screenAdapter.frame);
+                var _textPick = p.random(0, 1);
+                var _text = _textPick > 0.5 ? 'ENTROPIA' : 'AGOSTO 2016';
+                var _color = _textY >= p.height / 2 ? frontColor : backColor;
+
+                texts.push(new _text3.default(screenAdapter.nameSize, _text, _textX, _textY, _color));
+            }
+        }
+
+        function drawTexts(p) {
+            fillTextsArray(p);
+
+            for (var i = 0; i < texts.length; i++) {
+                if (texts[i].alpha === 255) {
+                    texts.forEach(function (t) {
+                        return t.draw(p);
+                    });
+                } else {
+                    texts.forEach(function (t) {
+                        return t.fadeIn(p, growthTime * .5, fps);
+                    });
+                }
+            }
+        }
+
+        //////// layout helpers
+        function screenAdapt(orientation, width, height) {
+            var s = {};
+
+            // min and max fontsize, max size etc based on screen size
+            if (orientation === 'portrait') {
+                // smartphone
+                if (width <= 480) {
+                    console.log(3);
+                    s.nameSize = height / 22;
+                    s.songNameSize = height / 15;
+                    s.frame = height / 10;
+                    s.maxSize = width - width / 3;
+                    s.posX = width / 2;
+                    s.posY = height / 2;
+
+                    // tablet
+                } else if (width <= 1024) {
+                        console.log('2');
+                        s.nameSize = height / 21;
+                        s.songNameSize = height / 13;
+                        s.frame = height / 10;
+                        s.maxSize = width - width / 3;
+                        s.posX = width / 2;
+                        s.posY = height / 2;
+
+                        // desktop/laptop
+                    } else {
+                            console.log('1');
+                            // does not apply
+                            s.nameSize = height / 17;
+                            s.songNameSize = height / 10;
+                            s.frame = height / 5;
+                            s.maxSize = width - width / 3;
+                            s.posX = width / 2;
+                            s.posY = height / 2;
+                        }
+            } else if (orientation === 'landscape') {
+
+                if (width < 480) {
+                    // does not apply, always portrait
+
+                    // medium
+                    // } else if (width <= 1024) {
+
+                    //     s.nameSize = height/21;
+                    //     s.songNameSize = height/13;
+                    //     s.frame = height/10;
+                    //     s.maxSize = height - height/3;
+                    //     s.posX = width/2;
+
+                    // large landscape
+                } else {
+                        // console.log('large');
+                        // s.nameSize = height/17;
+                        // s.songNameSize = height/10;
+                        // s.frame = height/10;
+                        // s.maxSize = height - height/5;
+                        // s.posX = width/2;
+                        s.nameSize = height / 21;
+                        s.songNameSize = height / 10;
+                        s.frame = height / 10;
+                        s.maxSize = width - width / 3;
+                        s.posX = width / 2;
+                        s.posY = height / 2;
+                    }
+            }
+
+            return s;
+        }
+
+        function screenOrientation(width, height) {
+            var orientation = void 0;
+
+            if (width >= height) {
+                orientation = 'landscape';
+            } else {
+                orientation = 'portrait';
+            }
+            console.log(orientation);
+
+            return orientation;
+        };
+
+        //////// youtube
+
+        function createVideo() {
+            video = true;
+            var orientation = screenOrientation(p.width, p.height);
+            var preWidth = orientation === 'portrait' ? p.width / 1.5 : p.width / 3;
+            var preHeight = orientation === 'portrait' ? p.height / 4 : p.height / 3;
+            var width = preWidth.toString();
+            var height = preHeight.toString();
+
+            player = new YT.Player('player', {
+                height: height,
+                width: width,
+                videoId: '2MWrSoX2v70',
+                playerVars: {
+                    showinfo: '0',
+                    color: 'white',
+                    controls: '2'
+                },
+                events: {
+                    'onStateChange': textFlagIt
+                }
+            });
+        }
+
+        //////// save frames
+
+        //////// interactivity
+
+        p.mousePressed = function () {};
+
+        p.keyTyped = function () {
+            console.log('key typed');
+
+            if (p.key === 's') {
+                console.log('saving');
+                console.log(growthTime + 'x' + fps);
+                // p.saveFrames('ciclos_', 'png', 18, fps);
+            }
+
+            return false;
+        };
+
+        p.mouseReleased = function () {
+            // if (!video) {
+            //     while(shapes.length > 0) {
+            //         shapes.pop();
+            //     }
+            //     createVideo();
+            //     screenAdapter.maxSize = (screenOrientation(p.width, p.height) === 'portrait') ? p.width*1.2 : p.height*1.2;
+            //     console.log(screenAdapter.maxSize);
+            // } else {
+            //     while(shapes.length > 0) {
+            //         shapes.pop();
+            //     }
+            //     console.log('video already loaded');
+            // }
+        };
+
+        p.touchEnded = function () {
+            // if (!video) {
+            //     while(shapes.length > 0) {
+            //         shapes.pop();
+            //     }
+            //     createVideo();
+            //     screenAdapter.maxSize = (screenOrientation(p.width, p.height) === 'portrait') ? p.width*1.2 : p.height*1.2;
+            //     console.log(screenAdapter.maxSize);
+            // } else {
+            //     while(shapes.length > 0) {
+            //         shapes.pop();
+            //     }
+            //     console.log('video already loaded');
+            // }
+        };
+    };
+}
+
+exports.default = frontColorCoast;
+
+},{"./filter-rect.class":19,"./semi.class":23,"./text.class":24,"./text2.class":25}],19:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FilterRect = function () {
+    function FilterRect() {
+        _classCallCheck(this, FilterRect);
+
+        this.alpha = 0;
+    }
+
+    _createClass(FilterRect, [{
+        key: "draw",
+        value: function draw(p, x, y, size, color) {
+            p.noStroke();
+            p.fill(color.r, color.g, color.b, this.alpha);
+            p.rect(x, y, size, size);
+        }
+    }, {
+        key: "fadeIn",
+        value: function fadeIn() {
+            if (this.alpha < 255) {
+                this.alpha += 0.62;
+            }
+        }
+    }]);
+
+    return FilterRect;
+}();
+
+exports.default = FilterRect;
+
+},{}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -529,6 +1044,7 @@ function GoldCoast() {
         var lyricsTwo = [];
         var lyricsThree = [];
         var lines = [];
+        var rects = [];
 
         ////////
         p.setup = function () {
@@ -544,7 +1060,7 @@ function GoldCoast() {
             p.frameRate(fps);
             p.smooth();
 
-            p.loadSounds(sounds);
+            // p.loadSounds(sounds);
             // sounds = p5.loadSound('assets/nemo.aac');
 
             // setup vars
@@ -798,7 +1314,7 @@ function GoldCoast() {
 
 exports.default = GoldCoast;
 
-},{"./gold-coast/circle.class":19,"./text.class":21,"./text2.class":22}],19:[function(require,module,exports){
+},{"./gold-coast/circle.class":21,"./text.class":24,"./text2.class":25}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -839,7 +1355,7 @@ var Circle = function () {
 
 exports.default = Circle;
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -854,15 +1370,73 @@ var _goldCoast = require('./gold-coast.service');
 
 var _goldCoast2 = _interopRequireDefault(_goldCoast);
 
+var _ciclos_lyrics = require('./ciclos_lyrics.service');
+
+var _ciclos_lyrics2 = _interopRequireDefault(_ciclos_lyrics);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var sketchesModule = _angular2.default.module('app.sketches', []);
 
 sketchesModule.factory('GoldCoast', _goldCoast2.default);
 
+// import GoldCoastLyrics from './gold-coast_lyrics.service';
+// sketchesModule.factory('GoldCoastLyrics', GoldCoastLyrics);
+
+sketchesModule.factory('CiclosLyrics', _ciclos_lyrics2.default);
+
 exports.default = sketchesModule;
 
-},{"./gold-coast.service":18,"angular":26}],21:[function(require,module,exports){
+},{"./ciclos_lyrics.service":18,"./gold-coast.service":20,"angular":29}],23:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Semi = function () {
+    function Semi(_size) {
+        _classCallCheck(this, Semi);
+
+        this.size = _size;
+        this.alpha = 0;
+    }
+
+    _createClass(Semi, [{
+        key: 'draw',
+        value: function draw(p, x, y, frontColor, position, backColor) {
+
+            var disp = p.height / 21 * 1.14;
+
+            if (position === 'top') {
+                p.fill(frontColor.r, frontColor.g, frontColor.b, this.alpha);
+                p.arc(x, y + disp, this.size, this.size, -p.PI + p.HALF_PI / 5, p.PI + p.HALF_PI / 5);
+            } else {
+                p.fill(frontColor.r, frontColor.g, frontColor.b, this.alpha);
+                p.arc(x, y - disp, this.size, this.size, 0 + p.HALF_PI / 5, p.PI + p.HALF_PI / 5);
+            }
+        }
+    }, {
+        key: 'shrinkAndFade',
+        value: function shrinkAndFade(p, fps, seconds, maxSize) {
+            var framesToMax = seconds * fps;
+            var decrementBy = maxSize / framesToMax;
+            this.size -= decrementBy;
+            var incrementBy = 255 / framesToMax;
+            this.alpha += incrementBy;
+        }
+    }]);
+
+    return Semi;
+}();
+
+exports.default = Semi;
+
+},{}],24:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -912,8 +1486,8 @@ var Text = function () {
 
 exports.default = Text;
 
-},{}],22:[function(require,module,exports){
-"use strict";
+},{}],25:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -924,9 +1498,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Text2 = function () {
-	function Text2(_textSize, _x, _y, _color) {
+	function Text2(_text, _textSize, _x, _y, _color) {
 		_classCallCheck(this, Text2);
 
+		this.text = _text ? _text : ' ';
 		this.textSize = _textSize;
 		this.x = _x;
 		this.y = _y;
@@ -935,16 +1510,19 @@ var Text2 = function () {
 	}
 
 	_createClass(Text2, [{
-		key: "draw",
+		key: 'draw',
 		value: function draw(p, text) {
+
 			p.textSize(this.textSize);
 			p.textAlign(p.CENTER, p.CENTER);
 
-			p.fill(this.color.r, this.color.g, this.color.b, this.alpha);
-			p.text(text, this.x, this.y);
+			if (text) {
+				p.fill(this.color.r, this.color.g, this.color.b, this.alpha);
+				p.text(text, this.x, this.y);
+			}
 		}
 	}, {
-		key: "fadeIn",
+		key: 'fadeIn',
 		value: function fadeIn(p, growthTime, fps) {
 			p.textSize(this.textSize);
 			p.textAlign(p.CENTER, p.CENTER);
@@ -961,7 +1539,7 @@ var Text2 = function () {
 
 exports.default = Text2;
 
-},{}],23:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.2.18
@@ -5501,7 +6079,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],24:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /* global YT */
 angular.module('youtube-embed', ['ng'])
 .service ('youtubeEmbedUtils', ['$window', '$rootScope', function ($window, $rootScope) {
@@ -5755,7 +6333,7 @@ angular.module('youtube-embed', ['ng'])
     };
 }]);
 
-},{}],25:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
  * @license AngularJS v1.5.5
  * (c) 2010-2016 Google, Inc. http://angularjs.org
@@ -36624,11 +37202,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],26:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":25}],27:[function(require,module,exports){
+},{"./angular":28}],30:[function(require,module,exports){
 (function (global){
 /*! p5.js v0.5.0 May 02, 2016 */
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.p5 = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -68052,7 +68630,7 @@ module.exports = p5;
 },{"../core/core":49}]},{},[40])(40)
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],28:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 !function(t,e){if("object"==typeof exports&&"object"==typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var n=e();for(var i in n)("object"==typeof exports?exports:t)[i]=n[i]}}(this,function(){return function(t){function e(i){if(n[i])return n[i].exports;var r=n[i]={exports:{},id:i,loaded:!1};return t[i].call(r.exports,r,r.exports,e),r.loaded=!0,r.exports}var n={};return e.m=t,e.c=n,e.p="",e(0)}([function(t,e,n){(function(e){"use strict";var i=n(4),r=n(8),o=n(2),s=n(9),a=n(1).Promise,u=n(15),h=n(16);t.exports=e.SC={initialize:function(){var t=arguments.length<=0||void 0===arguments[0]?{}:arguments[0];o.set("oauth_token",t.oauth_token),o.set("client_id",t.client_id),o.set("redirect_uri",t.redirect_uri),o.set("baseURL",t.baseURL),o.set("connectURL",t.connectURL)},get:function(t,e){return i.request("GET",t,e)},post:function(t,e){return i.request("POST",t,e)},put:function(t,e){return i.request("PUT",t,e)},"delete":function(t){return i.request("DELETE",t)},upload:function(t){return i.upload(t)},connect:function(t){return s(t)},isConnected:function(){return void 0!==o.get("oauth_token")},oEmbed:function(t,e){return i.oEmbed(t,e)},resolve:function(t){return i.resolve(t)},Recorder:u,Promise:a,stream:function(t,e){return h(t,e)},connectCallback:function(){r.notifyDialog(this.location)}}}).call(e,function(){return this}())},function(t,e,n){var i;(function(t,r,o,s){/*!
 	 * @overview es6-promise - a tiny implementation of Promises/A+.
 	 * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)

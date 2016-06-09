@@ -1,5 +1,6 @@
 export default class Text2 {
-	constructor(_textSize, _x, _y, _color) {
+	constructor(_text, _textSize, _x, _y, _color) {
+		this.text = (_text) ? _text : ' ';
 		this.textSize = _textSize;
 		this.x = _x;
 		this.y = _y;
@@ -8,11 +9,14 @@ export default class Text2 {
 	}
 
 	draw(p, text) {
+
 		p.textSize(this.textSize);    
 		p.textAlign(p.CENTER, p.CENTER);
 
-		p.fill(this.color.r, this.color.g, this.color.b, this.alpha);
-		p.text(text, this.x, this.y); 
+		if(text) {
+			p.fill(this.color.r, this.color.g, this.color.b, this.alpha);
+			p.text(text, this.x, this.y); 
+		}
 	}
 
 	fadeIn(p, growthTime, fps) {
